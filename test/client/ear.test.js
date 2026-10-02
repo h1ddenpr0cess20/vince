@@ -182,6 +182,18 @@ describe('the relief', () => {
     }
   });
 
+  it('rounds the back behind the canal instead of pulling it to a point', () => {
+    for (let y = -0.7; y <= 0.7; y += 0.02) {
+      for (let x = -0.35; x <= 0.42; x += 0.02) {
+        const { s } = locate(x, y);
+        if (s > 1) continue;
+        const front = reliefAt(x, y);
+        const pulled = backing(x, y, s, Infinity) - backing(x, y, s, front);
+        assert.ok(pulled < 0.005, `the back is dragged ${pulled.toFixed(3)} after the front at ${x.toFixed(2)}, ${y.toFixed(2)}`);
+      }
+    }
+  });
+
   it('measures the centre as the middle and the rim as the edge', () => {
     assert.equal(locate(...CENTRE).s, 0);
     const [x, y] = outlineAt(0.3);

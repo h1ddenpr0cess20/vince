@@ -156,7 +156,7 @@ export function relief(x, y, edge = 1, theta = 0) {
   h += 0.075 * bump(oval(x, y, -0.29, -0.10, 0.10, 0.15));
   h += 0.05 * bump(oval(x, y, 0.03, -0.26, 0.12, 0.08));
   h -= 0.15 * bump(oval(x, y, -0.10, -0.06, 0.18, 0.20));
-  h -= 0.12 * bump(oval(x, y, -0.19, -0.07, 0.06, 0.07));
+  h -= 0.10 * bump(oval(x, y, -0.19, -0.07, 0.10, 0.11));
 
   const lobe = 0.035 + 0.03 * bump(Math.hypot(x + 0.06, y + 0.58), 0.2);
   const w = lobeAt(y);
@@ -174,12 +174,13 @@ function smin(a, b, k) {
 
 /**
  * The back face, as a height below the plane: a shallow dome with the bulge
- * of the concha behind the bowl, kept clear of the front wherever the front
- * dips toward it.
+ * of the concha behind the bowl. The bulge is wide and deep enough to hold
+ * the canal on its own; the clamp to the front is only a safety net, because
+ * where it bites it drags the back into a spike behind the canal.
  */
 export function backing(x, y, s, front) {
   let h = -0.035 - 0.05 * (1 - s * s);
-  h -= 0.10 * bump(oval(x, y, -0.08, -0.05, 0.26, 0.28));
+  h -= 0.16 * bump(oval(x, y, -0.12, -0.055, 0.26, 0.28));
   const lobe = -0.035 - 0.03 * bump(Math.hypot(x + 0.06, y + 0.58), 0.2);
   const w = lobeAt(y);
   h = h * (1 - w) + lobe * w;
