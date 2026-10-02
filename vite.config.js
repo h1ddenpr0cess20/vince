@@ -1,0 +1,53 @@
+import basicSsl from '@vitejs/plugin-basic-ssl';
+import { defineConfig, loadEnv } from 'vite';
+
+import { createApiMiddleware } from './src/server/api.js';
+import { loadConfig } from './src/server/config.js';
+import { createConnectors } from './src/server/connectors/index.js';
+import { CERT_DIR } from './src/server/tls.js';
+
+function vinceApi(env) {
+  const config = loadConfig({ ...process.env, ...env });
+  return {
+    name: 'vince-api',
+    configureServer(server) {
+      /**
+       * The same registry production makes in `app.js`. Without it the dev
+       * server has no connector routes at all — which is the wrong way round,
+       * since handing work to a coding agent is mostly a thing you do while
+       * developing.
+       */
+      const connectors = createConnectors(config);
+      server.middlewares.use(createApiMiddleware(config, connectors));
+
+      /** Nothing an agent is doing outlives the dev server that spawned it. */
+      server.httpServer?.once('close', () => connectors.close());
+      if (!config.apiKey) {
+        server.config.logger.warn('OPENAI_API_KEY is not set — /api/* will fail until it is.');
+      }
+      const agents = connectors.agents;
+      server.config.logger.info(agents.length
+        ? `connectors → ${agents.join(', ')}, working in ${connectors.settings().cwd}`
+        : 'connectors → none yet, switch one on in the connectors panel');
+    },
+  };
+}
+
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+
+  const lan = mode === 'lan';
+
+  return {
+    plugins: [vinceApi(env), ...(lan ? [basicSsl({ certDir: CERT_DIR })] : [])],
+    server: {
+      port: Number(env.PORT) || 5173,
+      host: true,
+    },
+    build: {
+      target: 'es2022',
+      sourcemap: true,
+      chunkSizeWarningLimit: 800,
+    },
+  };
+});

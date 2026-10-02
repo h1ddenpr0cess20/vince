@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#111a3d">
+<meta name="description" content="A voice agent rendered as a disembodied ear — painted in thick strokes, turning to listen, and hopping in time with whoever is talking.">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Vince — AI assistant avatar</title>
+</head>
+<body>
+<canvas id="backdrop" aria-hidden="true"></canvas>
+<three-d-stage name="vince"></three-d-stage>
+
+<div id="status" class="chip" data-state="idle">idle</div>
+
+<nav id="menu" aria-label="Panels">
+  <button id="menu-toggle" class="chip" type="button" aria-expanded="false"
+          aria-controls="menu-items">menu</button>
+  <div id="menu-items" hidden>
+    <button id="toolbox-toggle" class="chip" type="button" aria-expanded="false"
+            aria-controls="toolbox">tools</button>
+    <button id="connectors-toggle" class="chip" type="button" aria-expanded="false"
+            aria-controls="connectors">connectors</button>
+    <button id="memory-toggle" class="chip" type="button" aria-expanded="false"
+            aria-controls="memory">memory</button>
+    <button id="history-toggle" class="chip" type="button" aria-expanded="false"
+            aria-controls="history">log</button>
+  </div>
+</nav>
+
+<div id="hud">
+  <div id="you"></div>
+  <div id="caption" aria-live="polite"></div>
+
+  <form id="composer">
+    <button id="mic" type="button" aria-pressed="false" aria-label="Start talking">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+        <rect x="5.4" y="1.4" width="4.2" height="7.6" rx="2.1" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M3 7.2a4.5 4.5 0 0 0 9 0M7.5 11.7v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <path class="slash" d="M2.6 12.4 12.4 2.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <input id="prompt" type="text" autocomplete="off" autocapitalize="sentences" enterkeyhint="send"
+           disabled placeholder="Tap the mic and talk to Vince…" aria-label="Message">
+
+    <button id="send" type="submit" aria-label="Send">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+        <path d="M7.5 12.5V2.5M7.5 2.5L3 7M7.5 2.5L12 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+
+    <div id="options">
+      <select id="model" class="chip" aria-label="Model"><option>loading…</option></select>
+      <select id="voice" class="chip" aria-label="Voice"><option>voice</option></select>
+      <select id="backend" class="chip" aria-label="Backend model"><option>backend</option></select>
+    </div>
+  </form>
+</div>
+
+<section id="history" hidden aria-label="Conversation history">
+  <header id="history-head">
+    <span class="chip">history</span>
+    <button id="history-new" class="chip" type="button">new</button>
+    <button id="history-clear" class="chip" type="button">clear</button>
+    <button id="history-close" class="chip" type="button" aria-label="Close history">close</button>
+  </header>
+  <div id="history-log"></div>
+</section>
+
+<section id="toolbox" hidden aria-label="Tools Vince can use">
+  <header id="toolbox-head">
+    <span class="chip">tools</span>
+    <button id="toolbox-close" class="chip" type="button" aria-label="Close tools">close</button>
+  </header>
+  <ul id="toolbox-list"></ul>
+  <p id="toolbox-note" class="chip">Memory has its own switch, in the memory panel.</p>
+</section>
+
+<section id="connectors" hidden aria-label="Coding agents">
+  <header id="connectors-head">
+    <span class="chip">connectors</span>
+    <button id="connectors-save" class="chip" type="button" disabled>save</button>
+    <button id="connectors-close" class="chip" type="button" aria-label="Close connectors">close</button>
+  </header>
+  <div id="connectors-body">
+    <div id="connectors-setup"></div>
+    <p id="connectors-note" class="chip"></p>
+    <div id="connectors-tasks">
+      <span class="chip section">work</span>
+      <div id="connectors-list"></div>
+    </div>
+  </div>
+</section>
+
+<section id="memory" hidden aria-label="What Vince remembers">
+  <header id="memory-head">
+    <span class="chip">memory</span>
+    <button id="memory-switch" class="chip" type="button" aria-pressed="true"
+            aria-label="Switch memory on or off">on</button>
+    <button id="memory-clear" class="chip" type="button">clear</button>
+    <button id="memory-close" class="chip" type="button" aria-label="Close memory">close</button>
+  </header>
+  <ul id="memory-list"></ul>
+  <form id="memory-add">
+    <input id="memory-input" type="text" autocomplete="off" maxlength="600"
+           placeholder="Something for Vince to remember" aria-label="New memory">
+    <button class="chip" type="submit">add</button>
+  </form>
+</section>
+
+<script type="module" src="/src/client/main.js"></script>
+</body>
+</html>

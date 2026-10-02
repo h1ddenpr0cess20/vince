@@ -1,0 +1,28 @@
+{
+  "name": "vince",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A voice agent rendered as a disembodied ear, driven by an OpenAI GPT-Live conversation",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "vite",
+    "dev:lan": "vite --host --mode lan",
+    "build": "vite build",
+    "start": "node --env-file-if-exists=.env src/server/index.js",
+    "preview": "npm run build && npm start",
+    "preview:lan": "npm run build && npm start -- --https",
+    "test": "node --test \"test/**/*.test.js\"",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
+    "eslint": "^10.11.0",
+    "globals": "^17.12.0",
+    "jsdom": "^30.1.1",
+    "vite": "^8.3.1"
+  }
+}
